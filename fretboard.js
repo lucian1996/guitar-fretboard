@@ -7,6 +7,9 @@ const numberOfFrets = 12;
 const singleFretmarkPositions = [3, 5, 7, 9, 15, 17, 19, 21];
 const doubleFretmarkPositions = [12, 24];
 
+const notesFlat = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+const notesSharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+let accidentals = "flats";
 
 const app = {
     init() {
@@ -33,8 +36,19 @@ const app = {
                 }
             }
         }
-    }
+    },
+    generateNoteNames(noteIndex) {
+        noteIndex = noteIndex % 12;
+        let noteName;
+        if (accidentals === 'flats') {
+            noteName = notesFlat[noteIndex];
+        } else if (accidentals === 'sharps') {
+            noteName = notesSharp[noteIndex];
+        }
+        return noteName;
+    },
 }
+console.log(app.generateNoteNames(13))
 
 
 

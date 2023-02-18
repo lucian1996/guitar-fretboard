@@ -22,6 +22,7 @@ html {
     /* background: #d4a65b; */
     background: #2c3240;
     width: 100%;
+    min-width: 1500PX;
     height: calc(var(--fretboard-height) * 1px);
     margin-top: 50px;
 }
