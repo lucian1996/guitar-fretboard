@@ -6,6 +6,7 @@
     --string-top-position: calc(var(--fretboard-height) / var(--number-of-strings) / 2 - var(--half-string-height));
     --double-fretmark-position-1: calc(var(--fretboard-height) * .25%);
     --double-fretmark-position-2: calc(var(--fretboard-height) * .75%);
+    --noteOpacity: 0;
 }
 
 * {
@@ -16,6 +17,22 @@ html {
     background-color: rgb(21, 21, 21);
 }
 
+.settings {
+    display: flex;
+    color: white;
+    padding: 20px;
+    border-bottom: 1px solid #444
+}
+
+.accidental-selector {
+    margin-left: 20px;
+}
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {  
+    opacity: 1;
+}
+label {
+    margin: 0 10px;
+}
 .fretboard {
     display: flex;
     flex-direction: column;
@@ -62,17 +79,19 @@ html {
     border-image: linear-gradient(to left, #999999, #fff, #bbb) 1 100%
 }
 .fret:before {
-    content: "";
-    width: 35px;
-    height: 35px;
+    content: attr(note-value);
+    width: 60px;
+    height: 60px;
     border-radius: 25%;
-    line-height:33px;
+    line-height: 150%;
     text-align: center;
+    vertical-align: center;
+    font-size: 200%;
     /* background: rgb(89, 124, 87); */
     background: rgb(85, 100, 101);
     z-index: 2;
     color: #eee;
-    opacity: .5
+    opacity: var(--noteOpacity);
 }
 
 .single-fretmark:after ,.double-fretmark:before, .double-fretmark:after {
@@ -88,7 +107,6 @@ html {
     top: calc(var(--fretboard-height) / 2 * 1px);
     transform: translate(0, -50%)
 }
-
 .double-fretmark:before {
     top: calc(var(--fretboard-height) *.25 * 1px);
     transform: translate(-140%, -50%);
