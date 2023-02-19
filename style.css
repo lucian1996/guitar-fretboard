@@ -116,3 +116,12 @@ label {
     top: calc(var(--fretboard-height) *.75 * 1px);
     transform: translate(-140%, -50%);
 }
+.note-name-section {
+    width: 100%;
+    color: #fff;
+    font-weight: 100;
+    font-size: 200%;
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5em;
+}

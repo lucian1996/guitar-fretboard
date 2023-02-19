@@ -5,6 +5,12 @@ const selectedInstrumentSelector = document.querySelector("#instrument-selector"
 const accidentalSelector = document.querySelector(".accidental-selector");
 const numberOfFretsSelector = document.querySelector('#number-of-frets');
 const showAllNotesSelector = document.querySelector('#show-all-notes');
+const showMultipleNotesSelector = document.querySelector('#show-multiple-notes');
+const noteNameSection = document.querySelector('.note-name-section');
+
+
+let allNotes;
+let showMultipleNotes = false;
 let numberOfFrets = 20;
 
 
@@ -14,7 +20,7 @@ const doubleFretmarkPositions = [12, 24];
 const notesFlat = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
 const notesSharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 const tuning = [4, 11, 7, 2, 9, 4];
-let accidentals = "flats";
+let accidentals = "sharps";
 
 const instrumentPresets = {
     'Guitar': [4, 11, 7, 2, 9, 4],
@@ -31,6 +37,7 @@ const app = {
     init() {
         this.setupFretboard();
         this.setupSelectedInstrumentSelector();
+        this.setupNoteNameSection();
         this.setupEventListeners();
     },
     setupFretboard() {
@@ -43,7 +50,7 @@ const app = {
             for (let fret = 0; fret <= numberOfFrets; fret++) {
                 let fretDiv = tools.createElement('div');
                 let noteName = this.generateNoteNames(fret + instrumentPresets[selectedInstrument][string])
-                fretDiv.setAttribute('note-value', noteName)
+                fretDiv.setAttribute('data-note', noteName)
                 fretDiv.classList.add('fret')
                 stringDiv.appendChild(fretDiv)
                 if (string === 0 && singleFretmarkPositions.indexOf(fret) !== -1) {
@@ -56,6 +63,7 @@ const app = {
                 }
             }
         }
+        allNotes = document.querySelectorAll('.fret');
     },
     generateNoteNames(noteIndex) {
         noteIndex = noteIndex % 12;
@@ -73,13 +81,34 @@ const app = {
         selectedInstrumentSelector.appendChild(instrumentOption);
       }
     },
+    setupNoteNameSection() {
+        noteNameSection.innerHTML = ''
+        let noteNames;
+        if (accidentals == 'flats') {
+            noteNames = notesFlat;
+        } else {
+            noteNames = notesSharp;
+        }
+        noteNames.forEach((noteName) => {
+            let noteNameElement = tools.createElement('span', noteName);
+            noteNameSection.appendChild(noteNameElement)
+        })
+    },
     showNoteDot(event){
         if (event.target.classList.contains('fret')) {
-            event.target.style.setProperty('--noteOpacity', 1);
+            if (showMultipleNotes) {
+                app.toggleMultipleNotes(event.target.dataset.note, 1)
+            } else {
+                event.target.style.setProperty('--noteOpacity', 1);
+            }
         }
     },
     hideNoteDot(event){
-        event.target.style.setProperty('--noteOpacity', 0)
+        if (showMultipleNotes) {
+            app.toggleMultipleNotes(event.target.dataset.note, 0)
+        } else {
+            event.target.style.setProperty('--noteOpacity', 0);
+        }
     },
     setupEventListeners() {
         fretboard.addEventListener('mouseover', this.showNoteDot);
@@ -93,6 +122,7 @@ const app = {
             if (event.target.classList.contains('acc-select')) {
                 accidentals = event.target.value;
                 this.setupFretboard();
+                this.setupNoteNameSection();
             } else {
                 return;
             }
@@ -114,6 +144,28 @@ const app = {
                 this.setupFretboard();
             }
         });
+        showMultipleNotesSelector.addEventListener('change', () => {
+            showMultipleNotes = !showMultipleNotes;
+        });
+        noteNameSection.addEventListener('mouseover', (event) => {
+            let noteToShow = event.target.innerText;
+            app.toggleMultipleNotes(noteToShow, 1)
+        });
+        noteNameSection.addEventListener('mouseout', (event) => {
+            if (!showAllNotesSelector.checked) {
+                let noteToShow = event.target.innerText;
+                app.toggleMultipleNotes(noteToShow, 0)
+            } else {
+                return;
+            }
+        });
+    },
+    toggleMultipleNotes(noteName, opacity) {
+        for (let i = 0; i < allNotes.length; i++) {
+            if (allNotes[i].dataset.note === noteName) {
+                allNotes[i].style.setProperty('--noteOpacity', opacity);
+            }
+        }
     }
 }
 
