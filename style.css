@@ -79,7 +79,7 @@ label {
     border-image: linear-gradient(to left, #999999, #fff, #bbb) 1 100%
 }
 .fret:before {
-    content: attr(note-value);
+    content: attr(data-note);
     width: 60px;
     height: 60px;
     border-radius: 25%;
